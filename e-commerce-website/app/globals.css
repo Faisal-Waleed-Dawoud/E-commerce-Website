@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+
+@layer components {
+  .table-custom-cell {
+    @apply border-t-secondary-lighter border-t border-l border-l-secondary-lighter border-s px-3 py-2 hover:bg-secondary-lighter duration-300 w-1/5
+  }
+
+  .input-container {
+    @apply flex items-center gap-2 flex-wrap
+  }
+
+  .input {
+    @apply outline-2 focus:outline-[3px] pl-2 duration-300 rounded-sm
+  }
+
+  .invalid-input {
+    @apply outline-dangerous-light
+  }
+
+  .filling-input {
+    @apply outline-secondary-lighter focus:outline-secondary-light
+  }
+
+  .invalid-input-label {
+    @apply w-full text-center text-dangerous-light
+  }
+}
+
+@theme {
+  --color-primary: hsl(217 100% 50%);
+  --color-primary-light: hsl(from var(--color-primary) h s calc(l + 20));
+  --color-primary-lighter: hsl(from var(--color-primary) h s calc(l + 40)); 
+  --color-primary-dark: hsl(from var(--color-primary) h s calc(l - 20)); 
+  --color-primary-darker: hsl(from var(--color-primary) h s calc(l - 40)); 
+  --color-secondary: hsl(217 0% 50%);
+  --color-secondary-light: hsl(from var(--color-secondary) h s calc(l + 20));
+  --color-secondary-lighter: hsl(from var(--color-secondary) h s calc(l + 40));
+  --color-secondary-dark: hsl(from var(--color-secondary) h s calc(l - 20));
+  --color-secondary-darker: hsl(from var(--color-secondary) h s calc(l - 40));
+  --color-dangerous: hsl(357 96.3% 50%);
+  --color-dangerous-light: hsl(from var(--color-dangerous) h s calc(l + 20));
+  --color-dangerous-lighter: hsl(from var(--color-dangerous) h s calc(l + 40));
+  --color-dangerous-dark: hsl(from var(--color-dangerous) h s calc(l - 20));
+  --color-dangerous-darker: hsl(from var(--color-dangerous) h s calc(l - 40));
+  --color-modal-background: rgba(0,0,0,0.5);
+  --shadow-custom: 0px 2px 2px hsla(0, 0%, 0%, 0.07), 0px 4px 4px hsla(0, 0%, 0%, 0.15)
+}
