@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Button from "../../button";
 import UserForm from "./userform";
 
-function Createuser() {
+function Createuser({buttonText} : {buttonText:string}) {
   const [open, setOpen] = useState(false);
 
   function handleOpen() {
@@ -12,8 +12,8 @@ function Createuser() {
 
   return (
     <>
-      {open && <UserForm handleFunction={handleOpen} />}
-      <Button text="+ New User" handleFunction={handleOpen} />
+      {open && <UserForm handleFunction={handleOpen}/>}
+      <Button text={buttonText} handleFunction={handleOpen} />
     </>
   );
 }

@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import Sidebar from "@/components/dasboard/sidebar";
 import Header from "@/components/dasboard/header";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -29,6 +30,7 @@ export default async function RootLayout({
                         <div className="grow p-3 w-3xl md:w-4xl lg:w-5xl xl:w-6xl overflow-x-hidden">
                             <Header />
                             {children}
+                            <Toaster richColors={true}/>
                         </div>
                     </div>
                 </body>

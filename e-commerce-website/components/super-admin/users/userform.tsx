@@ -1,70 +1,78 @@
+import Modal from '@/components/modal'
 import Submit from '@/components/submit'
 import { createUserFunction, formState } from '@/lib/users'
-import { error } from 'console'
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect } from 'react'
+import { Toaster } from 'sonner'
+import { toast } from 'sonner'
 
 function UserForm({handleFunction} : {handleFunction: () => void}) {
 
 
     const initialState: formState = {
-        errors: {}
+        errors: {},
     }
+    
+    
+    const [state, createFormAction, ispending] = useActionState(createUserFunction, initialState)
+    
+    let toaster : string | React.ReactElement = ""
 
-    const [state, formAction, ispending] = useActionState(createUserFunction, initialState)
+    useEffect(() => {
+
+        if (state.status === 200) {
+            toaster = toast.success("User Created Successfully")
+        } else if (state.status === 400) {
+            toaster = toast.error("Cannot Create a User")
+        }
+
+    }, [state])
     
     return (
-        <div className="absolute top-1/2 left-1/2 -translate-1/2 w-full h-full bg-modal-background">
-            <div className="absolute top-1/2 left-1/2 rounded-md -translate-x-1/2 -translate-y-1/2 bg-[#f9f9f9] shadow-custom p-3 w-full md:w-auto">
-                <div className=''>
-                    <div className="flex mb-4">
-                        <h1 className='text-center grow text-primary-light font-semibold text-3xl'>Create New User</h1>
-                        <button type='button' className='text-dangerous-light rounded-md hover:bg-dangerous-light hover:border-dangerous-light border-dangerous-lighter border-2 hover:text-white w-8 h-8 cursor-pointer duration-300 ' onClick={handleFunction}>X</button>
-                    </div>
-                    <form className='grid grid-cols-2 gap-3' action={formAction}>
+        <>
+        <Modal headingText={"Create New User"} handleFunction={handleFunction} hasHandler={true}>
+                    {state?.errors?.unhandledMessage && (<p className='invalid-input-label'>{state.errors.unhandledMessage}</p>)}
+                    <form className='custom-form-styles' action={createFormAction}>
                         <div className='input-container'>
-                            <label for="fname">First Name</label>
-                            <input type="text" name="first-name" className={`input ${state?.errors.firstName ? "invalid-input" : "filling-input"}`} id="fname" />
-                            {state.errors.firstName && (<p className='invalid-input-label'>{state.errors.firstName}</p>)}
+                            <label htmlFor="fname">First Name <span className='text-red-400'>*</span></label>
+                            <input type="text" defaultValue={(state?.payload?.get("first-name") || "") as string} name="first-name" className={`input ${state?.errors?.firstName ? "invalid-input" : "filling-input"}`} id="fname" />
+                            {state?.errors?.firstName && (<p className='invalid-input-label'>{state.errors.firstName}</p>)}
                         </div>
                         <div className='input-container'>
-                            <label for="lname">Last Name</label>
-                            <input type="text" name="last-name" className={`input ${state?.errors.firstName ? "invalid-input" : "filling-input"}`} id="lname" />
-                            {state?.errors.lastName && (<p className='invalid-input-label'>{state.errors.lastName}</p>)}
+                            <label htmlFor="lname">Last Name <span className='text-red-400'>*</span></label>
+                            <input type="text" name="last-name" defaultValue={(state?.payload?.get("last-name") || "") as string} className={`input ${state?.errors?.lastName ? "invalid-input" : "filling-input"}`} id="lname" />
+                            {state?.errors?.lastName && (<p className='invalid-input-label'>{state.errors.lastName}</p>)}
                         </div>
                         <div className='input-container'>
-                            <label for="username">Username</label>
-                            <input type="text" name="username" className={`input ${state?.errors.firstName ? "invalid-input" : "filling-input"}`} id="username" />
-                            {state?.errors.userName && (<p className='invalid-input-label'>{state.errors.userName}</p>)}
+                            <label htmlFor="username">Username <span className='text-red-400'>*</span></label>
+                            <input type="text" name="username" defaultValue={(state?.payload?.get("username") || "") as string} className={`input ${state?.errors?.userName ? "invalid-input" : "filling-input"}`} id="username" />
+                            {state?.errors?.userName && (<p className='invalid-input-label'>{state.errors.userName}</p>)}
                         </div>
                         <div className='input-container'>
-                            <label for="email">Email</label>
-                            <input type="email" name="email" className={`input ${state?.errors.firstName ? "invalid-input" : "filling-input"}`} id="email" />
-                            {state?.errors.email && (<p className='invalid-input-label'>{state.errors.email}</p>)}
+                            <label htmlFor="email">Email <span className='text-red-400'>*</span></label>
+                            <input type="email" name="email" defaultValue={(state?.payload?.get("email") || "") as string} className={`input ${state?.errors?.email ? "invalid-input" : "filling-input"}`} id="email" />
+                            {state?.errors?.email && (<p className='invalid-input-label'>{state.errors.email}</p>)}
                         </div>
                         <div className='input-container'>
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" name="phone" className={`input ${state?.errors.firstName ? "invalid-input" : "filling-input"}`} id="phone" />
-                            {state?.errors.phone && (<p className='invalid-input-label'>{state.errors.phone}</p>)}
+                            <label htmlFor="pass">Password <span className='text-red-400'>*</span></label>
+                            <input type="password" name="password" defaultValue={(state?.payload?.get("password") || "") as string} className={`input ${state?.errors?.password ? "invalid-input" : "filling-input"}`} id="pass" />
+                            {state?.errors?.password && (<p className='invalid-input-label'>{state.errors.password}</p>)}
                         </div>
-                        <div className='input-container'>
-                            <label for="pass">Password</label>
-                            <input type="password" name="password" className={`input ${state?.errors.firstName ? "invalid-input" : "filling-input"}`} id="pass" />
-                            {state?.errors.password && (<p className='invalid-input-label'>{state.errors.password}</p>)}
-                        </div>
-                        <div className='input-container'>
-                            <label for="">Role</label>
-                            <select name="role" id="">
-                                <option value='buyer'>Buyer</option>
-                                <option value='seller'>Seller</option>
-                                <option value='admin'>admin</option>
+                        <div className='input-container col-span-2 self-center'>
+                            <label htmlFor="role">Role <span className='text-red-400'>*</span></label>
+                            <select name="role" className='px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:outline-primary duration-300' id="role">
+                                <option className='px-2 py-1 rounded-md' value='buyer'>Buyer</option>
+                                <option className='px-2 py-1 rounded-md' value='seller'>Seller</option>
+                                <option className='px-2 py-1 rounded-md' value='admin'>admin</option>
                             </select>
+                            {state?.errors?.role && (<p className='invalid-input-label'>{state.errors.role}</p>)}
                         </div>
-                        <Submit />
+                        <div className='col-span-2 text-center'>
+                            <Submit text={"Create User"}/>
+                        </div>
                     </form>
-                </div>
-                
-            </div>
-        </div>
+        </Modal>
+        {toaster}
+        </>
     )
 }
 

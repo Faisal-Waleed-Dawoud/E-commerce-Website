@@ -26,7 +26,9 @@ async function Header() {
                             <p className="font-semibold textsm">{fullName}</p>
                             <p className="font-light">{role}</p>
                         </div>
-                        <UserButton />
+                        <div className="grow w-10 h-10 flex items-center justify-center">
+                            <UserButton />
+                        </div>
                     </div>
                 </div>
             </header>

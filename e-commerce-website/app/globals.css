@@ -9,11 +9,11 @@
   }
 
   .input-container {
-    @apply flex items-center gap-2 flex-wrap
+    @apply flex gap-2 flex-col
   }
 
   .input {
-    @apply outline-2 focus:outline-[3px] pl-2 duration-300 rounded-sm
+    @apply outline-2 focus:outline-[3px] focus:outline-none focus:ring-2 focus:ring-primary focus:outline-primary pl-2 duration-300 rounded-sm
   }
 
   .invalid-input {
@@ -26,6 +26,14 @@
 
   .invalid-input-label {
     @apply w-full text-center text-dangerous-light
+  }
+
+  .custom-form-styles {
+    @apply md:grid md:grid-cols-2 flex flex-col items-center gap-3
+  }
+
+  .closing-btn {
+    @apply text-dangerous-light rounded-md hover:bg-dangerous-light hover:border-dangerous-light border-dangerous-lighter border-2 hover:text-white w-8 h-8 cursor-pointer duration-300
   }
 }
 

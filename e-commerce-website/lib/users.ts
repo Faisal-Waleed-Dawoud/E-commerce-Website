@@ -1,7 +1,7 @@
 'use server'
-
 import { revalidatePath } from "next/cache"
 import { clerkClient } from "@clerk/nextjs/server"
+import { redirect } from "next/navigation"
 
 
 export type Errors = {
@@ -11,11 +11,13 @@ export type Errors = {
     email?:string,
     password?:string,
     role?:string,
-    phone?:string
+    unhandledMessage?: string
 }
 
 export type formState = {
-    errors: Errors
+    errors?: Errors,
+    payload?: FormData;
+    status?: number
 }
 
 // Define the usesrs server actions here
@@ -26,12 +28,13 @@ export async function createUserFunction(prevState: formState, formData: FormDat
     const email = formData.get("email") as string
     const password = formData.get("password") as string
     const role = formData.get("role") as string
-    const phone = formData.get("phone") as string
 
     const errors: Errors = {}
 
     if(!userName) {
         errors.userName = "Empty Username"
+    } else if (userName.length < 4 || userName.length > 64) {
+        errors.userName = "Username length must be between 4 and 64"
     }
 
     if (!firstName) {
@@ -54,16 +57,8 @@ export async function createUserFunction(prevState: formState, formData: FormDat
         errors.role = "Please Select a Role"
     }
 
-    if (!phone) {
-        errors.phone = "Empty Phone Number"
-    }
-
-    if (!phone.startsWith("+") && phone) {
-        errors.phone = "Phone Number Must Start With The Country Code"
-    }
-
     if (Object.keys(errors).length > 0) {
-        return {errors}
+        return {errors, payload:formData, status: 400}
     }
 
     try {
@@ -76,10 +71,69 @@ export async function createUserFunction(prevState: formState, formData: FormDat
             password: password,
             publicMetadata: {role: role},
         })
-        console.log(user)
         revalidatePath("/super-admin/users")
-    } catch(error) {
-        console.log(error)
+        return {status: 200}
+    } catch(error: any) {
+        errors.unhandledMessage = error.errors?.[0]?.message
+        return {errors, payload:formData, status: 400}
+    }
+}
+
+
+export async function updateUserData(userId:string, prevState: formState, formData: FormData) {
+
+    const firstName = formData.get("first-name") as string
+    const lastName = formData.get("last-name") as string
+    const userName = formData.get("username") as string
+    const role = formData.get("role") as string
+    
+    const errors: Errors = {}
+
+    if(!userName) {
+        errors.userName = "Empty Username"
+    } else if (userName.length < 4 || userName.length > 64) {
+        errors.userName = "Username length must be between 4 and 64"
     }
 
+    if (!firstName) {
+        errors.firstName = "Empty First Name"
+    }
+
+    if (!lastName) {
+        errors.lastName = "Empty Last Name"
+    }
+
+    if (!role) {
+        errors.role = "Please Select a Role"
+    }
+
+    if (Object.keys(errors).length > 0) {
+        return {errors, payload:formData, status: 400}
+    }
+
+    try {
+        const user = await(await clerkClient()).users.updateUser(userId, {
+            firstName: firstName,
+            lastName: lastName,
+            username: userName,
+            publicMetadata: {role: role},
+        })
+        revalidatePath(`/super-admin/users`)
+        return {status: 200, payload:formData, errors}
+    } catch (error: any) {
+        errors.unhandledMessage = error.errors?.[0]?.message
+        return {errors, payload:formData, status: 400}
+    }
+}
+
+export async function deleteUserClerk(userId: string) {
+    const errors: Errors = {}
+    try {
+        (await clerkClient()).users.deleteUser(userId)
+        revalidatePath("/super-admin/users")
+        return {status: 200}
+    } catch(error: any) {
+        errors.unhandledMessage = error.errors?.[0]?.message
+        return {errors, status: 400}
+    }
 }

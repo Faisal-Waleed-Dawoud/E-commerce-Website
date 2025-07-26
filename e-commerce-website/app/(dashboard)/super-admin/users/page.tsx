@@ -3,12 +3,13 @@ import React from 'react'
 
 
 
-async function Page() {
+function Page() {
+
 
     return (
-        <div>
+        <>
             <Userstable />
-        </div>
+        </>
     )
 }
 

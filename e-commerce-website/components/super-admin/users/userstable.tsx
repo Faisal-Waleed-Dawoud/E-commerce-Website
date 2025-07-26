@@ -1,10 +1,15 @@
 import Createuser from "@/components/super-admin/users/createuser";
 import { formatDate } from "@/lib/utils";
-import { clerkClient } from "@clerk/nextjs/server";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 import Image from "next/image";
 import React from "react";
+import Deleteuser from "./deleteuser";
+import UpdateUserForm from "./updateUserForm";
 
 async function Userstable() {
+    const {userId} = await auth()
+    const {publicMetadata} = await (await clerkClient()).users.getUser(userId)
+    const userRole = publicMetadata.role
     const { users } = await clerkClient();
     const userList = (await users.getUserList()).data;
     return (
@@ -13,7 +18,7 @@ async function Userstable() {
                 <div className="flex justify-between items-center">
                     <h1 className="text-3xl mb-3">Users</h1>
                     <div>
-                        <Createuser />
+                        <Createuser buttonText="+ New User"/>
                     </div>
                 </div>
                 <table className="table">
@@ -30,7 +35,8 @@ async function Userstable() {
                         {userList.map((user) => {
                             const {
                                 id,
-                                _raw,
+                                firstName,
+                                lastName,
                                 imageUrl,
                                 username,
                                 primaryEmailAddressId,
@@ -62,6 +68,8 @@ async function Userstable() {
                                     <td className="table-custom-cell border-r border-r-secondary-lighter">
                                         {formattedCreatedAt}
                                     </td>
+                                    {userRole === publicMetadata.role && userId !== id ? null :<td><UpdateUserForm userData={{id,firstName, lastName, username, emailAddress, publicMetadata}}/></td>}
+                                    {publicMetadata.role !== userRole && <td><Deleteuser userData={{id, username, publicMetadata}}/></td>}
                                 </tr>
                             );
                         })}
