@@ -1,14 +1,17 @@
 import Userstable from '@/components/super-admin/users/userstable'
+import { getUsers } from '@/lib/users';
 import React from 'react'
 
 
 
-function Page() {
+async function Page({searchParams} : {searchParams: Promise<{query?:string}>}) {
+    const {query} = await searchParams
 
+    const userList = await getUsers()
 
     return (
         <>
-            <Userstable />
+            <Userstable  query={query} userList={userList}/>
         </>
     )
 }

@@ -11,3 +11,47 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id          String   @id @default(uuid())
+  firstName   String
+  lastName    String
+  username    String   @unique
+  email       String   @unique
+  clerkUserId String   @unique
+  createdAt   DateTime @default(now())
+  role        Roles
+  store       Store?
+}
+
+model Store {
+  id      String    @id @default(uuid())
+  name    String    @unique
+  product Product[]
+  seller  User      @relation(fields: [userId], references: [clerkUserId])
+  userId  String    @unique
+}
+
+model Product {
+  id          String     @id @default(uuid())
+  name        String
+  stock       Int
+  description String
+  price       Int
+  rating      Float
+  store       Store      @relation(fields: [storeId], references: [id])
+  storeId     String
+  category    Category[]
+}
+
+model Category {
+  id      String    @id @default(uuid())
+  name    String    @unique
+  product Product[]
+}
+
+enum Roles {
+  super_admin
+  admin
+  seller
+  buyer
+}

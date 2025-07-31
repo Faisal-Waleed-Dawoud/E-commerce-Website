@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import Sidebar from "@/components/dasboard/sidebar";
 import Header from "@/components/dasboard/header";
 import { Toaster } from "sonner";
+import { getUser } from "@/lib/users";
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -17,8 +18,7 @@ export default async function RootLayout({
 }>) {
 
     const {userId} = await auth()
-    const client = await clerkClient()
-    const user = (await client.users.getUser(userId))
+    const user = await getUser(userId)
     const role = user.publicMetadata.role
 
     return (

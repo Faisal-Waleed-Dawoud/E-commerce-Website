@@ -3,6 +3,7 @@ import Submit from '@/components/submit'
 import { deleteUserClerk, formState } from '@/lib/users'
 import React, { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
+import Form from "next/form"
 
 
 
@@ -32,9 +33,9 @@ function DeleteUserContent({userData}) {
         <>
             {state.errors?.unhandledMessage && (<p className='invalid-input-label'>{state.errors.unhandledMessage}</p>)}
             <p>Are you sure you want to delete the {userData.role} {userData.username}</p>
-            <form action={deleteFormAction}>
+            <Form action={deleteFormAction}>
                 <Submit text='delete'/>
-            </form>
+            </Form>
             {toaster}
         </>
     )

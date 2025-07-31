@@ -1,24 +1,25 @@
 import Createuser from "@/components/super-admin/users/createuser";
 import { formatDate } from "@/lib/utils";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { currentUser, User } from "@clerk/nextjs/server";
 import Image from "next/image";
 import React from "react";
 import Deleteuser from "./deleteuser";
 import UpdateUserForm from "./updateUserForm";
+import Search from "@/components/dasboard/search";
 
-async function Userstable() {
-    const {userId} = await auth()
-    const {publicMetadata} = await (await clerkClient()).users.getUser(userId)
-    const userRole = publicMetadata.role
-    const { users } = await clerkClient();
-    const userList = (await users.getUserList()).data;
+async function Userstable({query, userList} : {query?: string, userList: User[]}) {
+    const user = await currentUser()
+    const {id: userId, publicMetadata:{role}} = user
+
+
     return (
         <>
-            <div className="bg-[#f9f9f9] rounded-md p-3 shadow-custom overflow-x-auto ">
+            <div className="bg-[#f9f9f9] rounded-md p-3 shadow-custom overflow-auto h-96">
                 <div className="flex justify-between items-center">
                     <h1 className="text-3xl mb-3">Users</h1>
-                    <div>
-                        <Createuser buttonText="+ New User"/>
+                    <div className="flex gap-2 items-center">
+                        <Search location={"/super-admin/users"} placedText={"Search for users..."} />
+                        <Createuser buttonText="+ New User" />
                     </div>
                 </div>
                 <table className="table">
@@ -59,7 +60,7 @@ async function Userstable() {
                                             className="rounded-full mx-auto"
                                             width={40}
                                             height={40}
-                                            src={imageUrl ? imageUrl : "/public/user-image.webp"}
+                                            src={imageUrl ? imageUrl : "/user-image.webp"}
                                         />
                                     </td>
                                     <td className="table-custom-cell">{username}</td>
@@ -68,8 +69,25 @@ async function Userstable() {
                                     <td className="table-custom-cell border-r border-r-secondary-lighter">
                                         {formattedCreatedAt}
                                     </td>
-                                    {userRole === publicMetadata.role && userId !== id ? null :<td><UpdateUserForm userData={{id,firstName, lastName, username, emailAddress, publicMetadata}}/></td>}
-                                    {publicMetadata.role !== userRole && <td><Deleteuser userData={{id, username, publicMetadata}}/></td>}
+                                    {role === publicMetadata.role && userId !== id ? null : (
+                                        <td>
+                                            <UpdateUserForm
+                                                userData={{
+                                                    id,
+                                                    firstName,
+                                                    lastName,
+                                                    username,
+                                                    emailAddress,
+                                                    publicMetadata,
+                                                }}
+                                            />
+                                        </td>
+                                    )}
+                                    {publicMetadata.role !== role && (
+                                        <td>
+                                            <Deleteuser userData={{ id, username, publicMetadata }} />
+                                        </td>
+                                    )}
                                 </tr>
                             );
                         })}

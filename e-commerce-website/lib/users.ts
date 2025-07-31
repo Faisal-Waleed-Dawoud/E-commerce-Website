@@ -3,7 +3,8 @@ import { revalidatePath } from "next/cache"
 import { clerkClient } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 
-
+// This type is for errprs that might happen to the user form fields
+// The unhandled error is for connection or clerk unhandeld errors
 export type Errors = {
     firstName?: string,
     lastName?: string,
@@ -14,13 +15,17 @@ export type Errors = {
     unhandledMessage?: string
 }
 
+// This indicates what will be the state of the form and its content
+// The errors property contains the possible errors for the user form
+// The payload contains the recieved formData
 export type formState = {
     errors?: Errors,
     payload?: FormData;
     status?: number
 }
 
-// Define the usesrs server actions here
+
+// Create User
 export async function createUserFunction(prevState: formState, formData: FormData) {
     const firstName = formData.get("first-name") as string
     const lastName = formData.get("last-name") as string
@@ -79,7 +84,31 @@ export async function createUserFunction(prevState: formState, formData: FormDat
     }
 }
 
+// Read 
+// Many Users
+export async function getUsers(query?:string) {
+    const { users } = await clerkClient();
+    if (query) {
+        return (await users.getUserList({query: query})).data;
+    } else {
+        return (await users.getUserList()).data;
+    }
+}
 
+// Single User
+export async function getUser(userId:string) {
+    const { users } = await clerkClient();
+    return (await users.getUser(userId))
+}
+
+// Users Count
+export async function getUsersCount() {
+    const { users } = await clerkClient();
+    return (await users.getCount())
+}
+
+// Update
+// Takes the userId which will be used in updating
 export async function updateUserData(userId:string, prevState: formState, formData: FormData) {
 
     const firstName = formData.get("first-name") as string
@@ -126,6 +155,7 @@ export async function updateUserData(userId:string, prevState: formState, formDa
     }
 }
 
+// Delete
 export async function deleteUserClerk(userId: string) {
     const errors: Errors = {}
     try {

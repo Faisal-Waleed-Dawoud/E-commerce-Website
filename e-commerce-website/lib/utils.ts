@@ -1,10 +1,13 @@
-import { User } from "@clerk/nextjs/server"
+import { currentUser, User, UserJSON } from "@clerk/nextjs/server"
+import { Roles } from "./types"
 
+// This function is used to capitalize the names in the header component
 export const capitlizeFirstLetter = (text: string) => {
-    text = text[0].toUpperCase() + text.substring(1).toLocaleLowerCase()
+    text = text[0].toUpperCase() + text.substring(1).toLowerCase()
     return text
-}   
+}
 
+// This function returns the integer date and turn it into date in a dd-mm-yyyy format 
 export const formatDate = (time: number) => {
     const date = new Date(time)
     const day = date.getDate()
@@ -13,16 +16,29 @@ export const formatDate = (time: number) => {
     return `${day}-${month}-${year}`
 }
 
-export const getUserDetails = (user:User) => {
-    const {id,firstName, lastName, username, emailAddresses, publicMetadata} = user
-    const {emailAddress} = emailAddresses.find(email => email.id === user.primaryEmailAddressId)
-    const data = {
-        id: id,
-        firstName: firstName,
-        lastName: lastName,
+export const getUserDetails = (user:UserJSON) => {
+    const {id,first_name, last_name, username, email_addresses, primary_email_address_id, public_metadata} = user
+    const {email_address} = email_addresses.find(email => email.id === user.primary_email_address_id)
+    const data: Record<string,any> = {
+        id:id,
+        firstName: first_name,
+        lastName: last_name,
         userName: username,
-        email: emailAddress,
-        role: publicMetadata.role
+        email: email_address,
+        role: public_metadata.role
     }
     return data
 }
+
+
+// This function returns the current user role
+// if the role contains _ like super_admin it will be turned into super-admin
+export const currentUserRouteRole = async () => {
+    const user = await currentUser()
+    if (user) {
+        const role = user?.publicMetadata.role
+        const replacedText = Roles[role].replace("_", "-")
+        return role ? replacedText : ""
+    }
+}
+

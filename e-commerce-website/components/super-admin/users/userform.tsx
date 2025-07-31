@@ -1,9 +1,10 @@
 import Modal from '@/components/modal'
 import Submit from '@/components/submit'
+import { Roles } from '@/lib/types'
 import { createUserFunction, formState } from '@/lib/users'
 import React, { useActionState, useEffect } from 'react'
-import { Toaster } from 'sonner'
 import { toast } from 'sonner'
+import Form from "next/form"
 
 function UserForm({handleFunction} : {handleFunction: () => void}) {
 
@@ -31,7 +32,7 @@ function UserForm({handleFunction} : {handleFunction: () => void}) {
         <>
         <Modal headingText={"Create New User"} handleFunction={handleFunction} hasHandler={true}>
                     {state?.errors?.unhandledMessage && (<p className='invalid-input-label'>{state.errors.unhandledMessage}</p>)}
-                    <form className='custom-form-styles' action={createFormAction}>
+                    <Form className='custom-form-styles' action={createFormAction}>
                         <div className='input-container'>
                             <label htmlFor="fname">First Name <span className='text-red-400'>*</span></label>
                             <input type="text" defaultValue={(state?.payload?.get("first-name") || "") as string} name="first-name" className={`input ${state?.errors?.firstName ? "invalid-input" : "filling-input"}`} id="fname" />
@@ -60,16 +61,16 @@ function UserForm({handleFunction} : {handleFunction: () => void}) {
                         <div className='input-container col-span-2 self-center'>
                             <label htmlFor="role">Role <span className='text-red-400'>*</span></label>
                             <select name="role" className='px-2 py-1 border border-gray-300 rounded-lg bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:outline-primary duration-300' id="role">
-                                <option className='px-2 py-1 rounded-md' value='buyer'>Buyer</option>
-                                <option className='px-2 py-1 rounded-md' value='seller'>Seller</option>
-                                <option className='px-2 py-1 rounded-md' value='admin'>admin</option>
+                                <option className='px-2 py-1 rounded-md' value={Roles.buyer}>Buyer</option>
+                                <option className='px-2 py-1 rounded-md' value={Roles.seller}>Seller</option>
+                                <option className='px-2 py-1 rounded-md' value={Roles.admin}>Admin</option>
                             </select>
                             {state?.errors?.role && (<p className='invalid-input-label'>{state.errors.role}</p>)}
                         </div>
                         <div className='col-span-2 text-center'>
                             <Submit text={"Create User"}/>
                         </div>
-                    </form>
+                    </Form>
         </Modal>
         {toaster}
         </>

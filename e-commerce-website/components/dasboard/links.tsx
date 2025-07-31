@@ -12,28 +12,31 @@ import {clsx} from "clsx"
 
 function Links({role}) {
     
+
     const Links = {
-        "buyer" : [
-            {name: "Dashboard", icon: <DashboardIcon />, url: "/user"},
-            {name: "Orders", url:"/user/orders"},
-            {name: "Stores", url:"user/stores"}
+        buyer : [
+            {name: "Dashboard", icon: <DashboardIcon />, url: "/buyer"},
+            {name: "Orders", url:"/buyer/orders"},
+            {name: "Stores", url:"/buyer/stores"}
         ], 
-        "seller" : [
+        seller : [
             {name: "Dashboard", icon: <DashboardIcon />, url: "/seller"},
             {name: "Store", icon: <StoreIcon />, url:"/seller/store"},
             {name: "Products", icon: <ShopIcon />, url:"/seller/products"}
         ], 
-        "admin" : [
+        admin : [
             {name: "Dashboard", icon: <DashboardIcon />, url: "/admin"},
             {name: "Sellers", icon: <RealEstateAgentIcon />, url:"/admin/sellers"},
             {name: "Stores", icon: <StoreIcon />, url:"/admin/stores-admin"}
         ],
-        "super-admin" : [
+        super_admin : [
             {name: "Dashboard", icon: <DashboardIcon />, url: "/super-admin"},
             {name: "Users", icon: <GroupIcon />, url:"/super-admin/users"},
             {name: "Stores", icon: <StoreIcon />, url:"/super-admin/stores"}
         ]
     }
+
+
 
     const path = usePathname()
 
