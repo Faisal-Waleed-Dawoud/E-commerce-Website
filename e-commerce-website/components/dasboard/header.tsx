@@ -1,5 +1,5 @@
 import { capitlizeFirstLetter } from "@/lib/utils";
-import { UserButton, UserProfile } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 import { auth, clerkClient } from "@clerk/nextjs/server";
 import React from "react";
 

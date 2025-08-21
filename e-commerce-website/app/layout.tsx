@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ImageKitProvider } from '@imagekit/next';
 
 
 export const metadata: Metadata = {
@@ -13,13 +14,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const urlEndPoint = process.env.NEXT_PUBLIC_URL_ENDPOINT
+
   return (
-  <ClerkProvider>
-    <html lang="en">
-      <body>
-        {children}
-      </body>
-    </html>
-  </ClerkProvider>
+    <ImageKitProvider urlEndpoint={urlEndPoint}>
+      <ClerkProvider>
+        <html lang="en">
+          <body>
+            {children}
+          </body>
+        </html>
+      </ClerkProvider>
+    </ImageKitProvider>
   );
 }
