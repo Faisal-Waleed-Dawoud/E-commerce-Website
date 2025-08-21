@@ -12,7 +12,7 @@ async function NavLinks() {
     const role = await currentUserRouteRole();
 
     const Links = [{ name: "Home", url: `/` }];
-
+    
     return (
         <>
             <ul>

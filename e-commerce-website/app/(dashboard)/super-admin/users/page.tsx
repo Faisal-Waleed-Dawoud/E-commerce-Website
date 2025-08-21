@@ -1,17 +1,23 @@
+import Spinner from '@/components/spinner';
 import Userstable from '@/components/super-admin/users/userstable'
-import { getUsers } from '@/lib/users';
-import React from 'react'
+import { MAX_NUMBERS_PER_PAGE } from '@/lib/types';
+import { getUsers, getUsersCount } from '@/lib/users';
+import React, { Suspense } from 'react'
 
 
 
-async function Page({searchParams} : {searchParams: Promise<{query?:string}>}) {
-    const {query} = await searchParams
+async function Page({searchParams} : {searchParams: Promise<{query?:string, page?:number}>}) {
+    const {query, page} = await searchParams
 
-    const userList = await getUsers()
+    const pages = page || 1
+    
+    const userList = await getUsers(query, page)
+    const usersCount = await getUsersCount()
+    const pageLimit = Math.ceil(usersCount / MAX_NUMBERS_PER_PAGE)
 
     return (
         <>
-            <Userstable  query={query} userList={userList}/>
+            <Userstable page={pages} pageLimit={pageLimit} userList={userList}/>
         </>
     )
 }

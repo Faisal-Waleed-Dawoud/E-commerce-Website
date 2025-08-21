@@ -1,7 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:where(.dark, .dark *));
-
 
 @layer components {
   .table-custom-cell {
@@ -35,6 +35,19 @@
   .closing-btn {
     @apply text-dangerous-light rounded-md hover:bg-dangerous-light hover:border-dangerous-light border-dangerous-lighter border-2 hover:text-white w-8 h-8 cursor-pointer duration-300
   }
+
+  .pagination-item {
+    @apply py-1 px-2 rounded-md cursor-pointer hover:bg-[#eee] duration-300
+  }
+
+  .pagination-arrow {
+    @apply p-1 cursor-pointer bg-[#eee] hover:bg-primary rounded-full hover:text-white duration-300 disabled:cursor-not-allowed disabled:bg-secondary-lighter disabled:text-secondary-light
+  }
+
+  .button-style {
+    @apply duration-300 disabled:bg-transparent cursor-pointer disabled:cursor-auto disabled:border-none
+  }
+
 }
 
 @theme {
@@ -53,6 +66,11 @@
   --color-dangerous-lighter: hsl(from var(--color-dangerous) h s calc(l + 40));
   --color-dangerous-dark: hsl(from var(--color-dangerous) h s calc(l - 20));
   --color-dangerous-darker: hsl(from var(--color-dangerous) h s calc(l - 40));
+  --color-alert: hsl(51, 100%, 56%);
+  --color-alert-light: hsl(from var(--color-alert) h s calc(l + 20));
+  --color-alert-lighter: hsl(from var(--color-alert) h s calc(l + 40));
+  --color-alert-dark: hsl(from var(--color-alert) h s calc(l - 20));
+  --color-alert-darker: hsl(from var(--color-alert) h s calc(l - 40));
   --color-modal-background: rgba(0,0,0,0.5);
   --shadow-custom: 0px 2px 2px hsla(0, 0%, 0%, 0.07), 0px 4px 4px hsla(0, 0%, 0%, 0.15)
 }

@@ -1,7 +1,8 @@
 'use server'
 import { revalidatePath } from "next/cache"
 import { clerkClient } from "@clerk/nextjs/server"
-import { redirect } from "next/navigation"
+
+import { MAX_NUMBERS_PER_PAGE } from "./types"
 
 // This type is for errprs that might happen to the user form fields
 // The unhandled error is for connection or clerk unhandeld errors
@@ -9,9 +10,9 @@ export type Errors = {
     firstName?: string,
     lastName?: string,
     userName?: string,
-    email?:string,
-    password?:string,
-    role?:string,
+    email?: string,
+    password?: string,
+    role?: string,
     unhandledMessage?: string
 }
 
@@ -36,7 +37,7 @@ export async function createUserFunction(prevState: formState, formData: FormDat
 
     const errors: Errors = {}
 
-    if(!userName) {
+    if (!userName) {
         errors.userName = "Empty Username"
     } else if (userName.length < 4 || userName.length > 64) {
         errors.userName = "Username length must be between 4 and 64"
@@ -63,7 +64,7 @@ export async function createUserFunction(prevState: formState, formData: FormDat
     }
 
     if (Object.keys(errors).length > 0) {
-        return {errors, payload:formData, status: 400}
+        return { errors, payload: formData, status: 400 }
     }
 
     try {
@@ -74,29 +75,36 @@ export async function createUserFunction(prevState: formState, formData: FormDat
             username: userName,
             emailAddress: [email],
             password: password,
-            publicMetadata: {role: role},
+            publicMetadata: { role: role },
         })
         revalidatePath("/super-admin/users")
-        return {status: 200}
-    } catch(error: any) {
+        return { status: 200 }
+    } catch (error: any) {
         errors.unhandledMessage = error.errors?.[0]?.message
-        return {errors, payload:formData, status: 400}
+        return { errors, payload: formData, status: 400 }
     }
 }
 
 // Read 
 // Many Users
-export async function getUsers(query?:string) {
+export async function getUsers(query?: string, page?: number) {
     const { users } = await clerkClient();
-    if (query) {
-        return (await users.getUserList({query: query})).data;
+    if (query || page) {
+        return (await users.getUserList({ 
+            query: query, 
+            limit: MAX_NUMBERS_PER_PAGE,
+            offset: (--page * MAX_NUMBERS_PER_PAGE) 
+        })).data;
     } else {
-        return (await users.getUserList()).data;
+        return (await users.getUserList({ 
+            limit: MAX_NUMBERS_PER_PAGE, 
+            offset: (--page * MAX_NUMBERS_PER_PAGE) 
+        })).data;
     }
 }
 
 // Single User
-export async function getUser(userId:string) {
+export async function getUser(userId: string) {
     const { users } = await clerkClient();
     return (await users.getUser(userId))
 }
@@ -109,16 +117,16 @@ export async function getUsersCount() {
 
 // Update
 // Takes the userId which will be used in updating
-export async function updateUserData(userId:string, prevState: formState, formData: FormData) {
+export async function updateUserData(userId: string, prevState: formState, formData: FormData) {
 
     const firstName = formData.get("first-name") as string
     const lastName = formData.get("last-name") as string
     const userName = formData.get("username") as string
     const role = formData.get("role") as string
-    
+
     const errors: Errors = {}
 
-    if(!userName) {
+    if (!userName) {
         errors.userName = "Empty Username"
     } else if (userName.length < 4 || userName.length > 64) {
         errors.userName = "Username length must be between 4 and 64"
@@ -137,21 +145,21 @@ export async function updateUserData(userId:string, prevState: formState, formDa
     }
 
     if (Object.keys(errors).length > 0) {
-        return {errors, payload:formData, status: 400}
+        return { errors, payload: formData, status: 400 }
     }
 
     try {
-        const user = await(await clerkClient()).users.updateUser(userId, {
+        const user = await (await clerkClient()).users.updateUser(userId, {
             firstName: firstName,
             lastName: lastName,
             username: userName,
-            publicMetadata: {role: role},
+            publicMetadata: { role: role },
         })
         revalidatePath(`/super-admin/users`)
-        return {status: 200, payload:formData, errors}
+        return { status: 200, payload: formData, errors }
     } catch (error: any) {
         errors.unhandledMessage = error.errors?.[0]?.message
-        return {errors, payload:formData, status: 400}
+        return { errors, payload: formData, status: 400 }
     }
 }
 
@@ -161,9 +169,9 @@ export async function deleteUserClerk(userId: string) {
     try {
         (await clerkClient()).users.deleteUser(userId)
         revalidatePath("/super-admin/users")
-        return {status: 200}
-    } catch(error: any) {
+        return { status: 200 }
+    } catch (error: any) {
         errors.unhandledMessage = error.errors?.[0]?.message
-        return {errors, status: 400}
+        return { errors, status: 400 }
     }
 }
