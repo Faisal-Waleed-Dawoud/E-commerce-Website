@@ -7,10 +7,22 @@ export type Product = {
     countitiy: number,
 }
 
-export type Sotre = {
+export type Store = {
     name: string,
     owner: string,
     createdDate: Date,
+}
+
+export type User = {
+    id: string,
+    username: string,
+    firstname: string,
+    lastname: string,
+    email:string,
+    store?: Store,
+    clerkUserId: string,
+    role: Roles,
+    createdAt: number
 }
 
 // This enum is used accross the forms and application and its values indicates the user role
@@ -22,3 +34,5 @@ export enum Roles {
     seller = "seller", 
     buyer = "buyer",
 }
+
+export const MAX_NUMBERS_PER_PAGE = 5

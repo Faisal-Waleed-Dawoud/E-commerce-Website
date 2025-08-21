@@ -5,11 +5,11 @@ import Button from './button'
 
 
 
-function Submit({text, handleFunction, redirect}: {text:string, handleFunction?:() => void, redirect?:boolean}) {
+function Submit({text, handleFunction, type='default', priority="primary", size="default"}: {text:string, handleFunction?:() => void, type?:string, priority?:string, size?:string}) {
     const {pending} = useFormStatus()
 
     return (
-        <Button text={text} disabled={pending} handleFunction={handleFunction}></Button>
+        <Button text={text} disabled={pending} handleFunction={handleFunction} type={type} priority={priority} size={size}></Button>
     )
 }
 

@@ -22,7 +22,7 @@ function Links({role}) {
         seller : [
             {name: "Dashboard", icon: <DashboardIcon />, url: "/seller"},
             {name: "Store", icon: <StoreIcon />, url:"/seller/store"},
-            {name: "Products", icon: <ShopIcon />, url:"/seller/products"}
+            {name: "Orders", icon: <ShopIcon />, url:"/seller/orders"}
         ], 
         admin : [
             {name: "Dashboard", icon: <DashboardIcon />, url: "/admin"},
