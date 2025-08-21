@@ -61,7 +61,7 @@ function UpdateUserContent({userData}) {
                         {state?.errors?.role && (<p className='invalid-input-label'>{state.errors.role}</p>)}
                     </div>
                     <div className='col-span-2 text-center'>
-                        <Submit text={"Update User"}/>
+                        <Submit text={"Update User"} type='alert'/>
                     </div>
             </Form>
         {toaster}

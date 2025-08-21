@@ -34,7 +34,7 @@ function DeleteUserContent({userData}) {
             {state.errors?.unhandledMessage && (<p className='invalid-input-label'>{state.errors.unhandledMessage}</p>)}
             <p>Are you sure you want to delete the {userData.role} {userData.username}</p>
             <Form action={deleteFormAction}>
-                <Submit text='delete'/>
+                <Submit text='delete' type='dangerous'/>
             </Form>
             {toaster}
         </>

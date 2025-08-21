@@ -19,7 +19,7 @@ function UpdateUserForm({userData} : {userData: any}) {
         {open && <Modal headingText='Update User' hasHandler={true} handleFunction={handleOpen}>
             <UpdateUserContent userData={userData}/>
         </Modal>}
-        <Button text='update' handleFunction={handleOpen}/>
+        <Button text='update' type='alert' priority='secondary' handleFunction={handleOpen}/>
         </>
     )
 }

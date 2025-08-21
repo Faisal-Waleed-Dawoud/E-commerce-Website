@@ -20,7 +20,7 @@ function Deleteuser({userData} : {userData: any}) {
         <Modal headingText='Delete User' hasHandler={true} handleFunction={handleOpen}>
             <DeleteUserContent userData={userData}/>
         </Modal>}
-        <Button text='delete' handleFunction={handleOpen}/>
+        <Button text='delete' type='dangerous' priority='secondary' handleFunction={handleOpen}/>
         </>
     )
 }
