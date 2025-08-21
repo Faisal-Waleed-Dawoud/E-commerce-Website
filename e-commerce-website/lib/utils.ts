@@ -1,11 +1,11 @@
-import { currentUser, User, UserJSON } from "@clerk/nextjs/server"
+import { currentUser, UserJSON } from "@clerk/nextjs/server"
 import { Roles } from "./types"
 
 // This function is used to capitalize the names in the header component
 export const capitlizeFirstLetter = (text: string) => {
     text = text[0].toUpperCase() + text.substring(1).toLowerCase()
     return text
-}
+}   
 
 // This function returns the integer date and turn it into date in a dd-mm-yyyy format 
 export const formatDate = (time: number) => {
@@ -37,8 +37,11 @@ export const currentUserRouteRole = async () => {
     const user = await currentUser()
     if (user) {
         const role = user?.publicMetadata.role
-        const replacedText = Roles[role].replace("_", "-")
-        return role ? replacedText : ""
+        if (role === "super_admin") {
+            const replacedText = Roles[role].replace("_", "-")
+            return replacedText
+        } 
+        return role
     }
 }
 

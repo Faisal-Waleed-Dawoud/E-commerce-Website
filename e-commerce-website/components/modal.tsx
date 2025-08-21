@@ -8,7 +8,7 @@ function Modal({children, headingText, handleFunction, hasLink, hasHandler} : {c
     return (
         <>
         <div className="absolute top-1/2 left-1/2 -translate-1/2 w-full min-h-screen bg-modal-background">
-            <div className="absolute top-1/2 left-1/2 rounded-md -translate-x-1/2 -translate-y-1/2 bg-[#f9f9f9] shadow-custom p-3 w-full md:w-auto">
+            <div className="absolute top-1/2 left-1/2 rounded-md -translate-x-1/2 -translate-y-1/2 bg-[#f9f9f9] shadow-custom p-3 w-full md:w-[700px]">
                 <div>
                     <div className="flex mb-4">
                         <h1 className='text-center grow text-primary-light font-semibold text-3xl'>{headingText}</h1>
