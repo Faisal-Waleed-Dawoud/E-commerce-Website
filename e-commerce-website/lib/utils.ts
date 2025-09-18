@@ -1,5 +1,6 @@
-import { currentUser, UserJSON } from "@clerk/nextjs/server"
+import { auth, currentUser, UserJSON } from "@clerk/nextjs/server"
 import { Roles } from "./types"
+import { cache } from "react"
 
 // This function is used to capitalize the names in the header component
 export const capitlizeFirstLetter = (text: string) => {
@@ -33,7 +34,7 @@ export const getUserDetails = (user:UserJSON) => {
 
 // This function returns the current user role
 // if the role contains _ like super_admin it will be turned into super-admin
-export const currentUserRouteRole = async () => {
+export const currentUserRouteRole = cache(async () => {
     const user = await currentUser()
     if (user) {
         const role = user?.publicMetadata.role
@@ -43,5 +44,9 @@ export const currentUserRouteRole = async () => {
         } 
         return role
     }
-}
+})
 
+export const authUserId = cache(async() => {
+    const {userId} = await auth()
+    return userId
+})
