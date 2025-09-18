@@ -1,0 +1,13 @@
+{
+    "HomePage" : {
+        "title": "E-commerce-website"
+    },
+    "NavigationLinks" : {
+        "Home" : "Home",
+        "Stores" : "Stores",
+        "Products" : "Products",
+        "Dashboard": "Dashboard",
+        "SignIn" : "Sign in",
+        "SignOut": "Sign Out"
+    }
+}

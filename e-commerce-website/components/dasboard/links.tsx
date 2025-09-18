@@ -7,7 +7,7 @@ import ShopIcon from '@mui/icons-material/Shop';
 import Link from 'next/link'
 import React from 'react'
 import { usePathname } from 'next/navigation';
-import {clsx} from "clsx"
+
 
 
 function Links({role}) {
@@ -42,15 +42,14 @@ function Links({role}) {
 
     return (
         <ul className='flex flex-col gap-2'>
-            {Links[role].map((link) => {
-                const isActiveLink = path === link.url
+            {Links[role].map((link : {name: string, icon: any, url:string}) => {
+                const isActiveLink = path === link.url || path.includes(link.url.split("/")[2])
+                
                 return (
-                <li key={link.name} className= {clsx('text-secondary-dark rounded-md hover:text-primary-light hover:bg-secondary-lighter p-2 cursor-pointer duration-300', {
-                    "bg-secondary-lighter" : isActiveLink === true
-                })}>
-                    <Link href={link.url} className={clsx('w-full block', {
-                        "text-primary-light" : isActiveLink === true
-                    })}>{link.icon} <span className='hidden md:inline'>{link.name}</span></Link>
+                <li key={link.name} className= {`text-secondary-dark rounded-md hover:text-primary-light hover:bg-secondary-lighter p-2 cursor-pointer duration-300 ${isActiveLink ? "bg-secondary-lighter" : ""}`}>
+                    <Link href={link.url} className={`w-full block ${isActiveLink ? "text-primary-light" : ""}`}>
+                        {link.icon} <span className='hidden md:inline'>{link.name}</span>
+                    </Link>
                 </li>
             )})}
         </ul>

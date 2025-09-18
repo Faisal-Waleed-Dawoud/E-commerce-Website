@@ -1,0 +1,13 @@
+{
+    "HomePage" : {
+        "title": "موقع تجارة إلكترونية"
+    },
+    "NavigationLinks" : {
+        "Home" : "الرئيسية",
+        "Stores" : "المتاجر",
+        "Products" : "المنتجات",
+        "Dashboard" : "لوحة التحكم",
+        "SignIn" : "تسجيل الدخول",
+        "SignOut": "تسجيل الخروج"
+    }
+}
