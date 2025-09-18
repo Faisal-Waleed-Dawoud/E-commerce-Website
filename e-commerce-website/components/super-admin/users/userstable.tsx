@@ -14,6 +14,10 @@ async function Userstable({page, pageLimit, userList} : {page:number, pageLimit:
             <p>Data Not Found</p>
         )
     }
+    const users = []
+    for (let index = 0; index < userList.length; index++) {
+        users.push(<UserInfo currentUserId={userId} currentUserRole={role} user={userList[index]}/>)
+    }
 
     return (
         <>
@@ -36,9 +40,7 @@ async function Userstable({page, pageLimit, userList} : {page:number, pageLimit:
                         </tr>
                     </thead>
                     <tbody>
-                        {userList.map(user => (
-                            <UserInfo key={user.id} currentUserId={userId} currentUserRole={role} user={user}/>
-                        ))}
+                        {users}
                     </tbody>
                 </table>
                 <Pagination pageNumber={page} pageLimit={pageLimit}/>
