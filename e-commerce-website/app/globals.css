@@ -5,7 +5,7 @@
 
 @layer components {
   .table-custom-cell {
-    @apply border-t-secondary-lighter border-t border-l border-l-secondary-lighter border-s px-3 py-2 hover:bg-secondary-lighter duration-300 w-1/5
+    @apply px-3 py-2 hover:bg-secondary-lighter duration-300 w-1/5
   }
 
   .input-container {
@@ -44,13 +44,59 @@
     @apply p-1 cursor-pointer bg-[#eee] hover:bg-primary rounded-full hover:text-white duration-300 disabled:cursor-not-allowed disabled:bg-secondary-lighter disabled:text-secondary-light
   }
 
-  .button-style {
-    @apply duration-300 disabled:bg-transparent cursor-pointer disabled:cursor-auto disabled:border-none
+  .file-upload {
+    @apply outline-secondary-lighter hover:text-primary hover:outline-primary
+  }
+
+  .invalid-file-upload { 
+    @apply outline-dangerous-lighter text-dangerous-lighter
+  }
+
+  .primary-btn-colors {
+    @apply bg-primary hover:bg-primary-dark text-white duration-300
+  }
+
+  .dangerous-btn-colors {
+    @apply bg-dangerous hover:bg-dangerous-dark text-white
+  } 
+
+  .alert-btn-colors {
+    @apply bg-alert hover:bg-alert-dark text-[#444] hover:text-white
+  }
+
+  .outlined-btn-primary {
+    @apply border-primary-light hover:bg-primary border-2 hover:text-white hover:border-primary
+  }
+
+  .outlined-btn-dangerous {
+    @apply border-dangerous-light hover:bg-dangerous border-2 hover:text-white hover:border-dangerous
+  }
+
+  .outlined-btn-alert {
+    @apply border-alert-light hover:bg-alert hover:text-white border-2 hover:border-alert
+  }
+
+  .medium-btn {
+    @apply px-3 py-2 rounded-md
+  }
+
+  .nav-link {
+    @apply px-2 py-1 hover:bg-primary hover:text-white duration-300 rounded-lg
+  }
+
+  .mobile-nav {
+    @apply w-[101%] min-h-screen p-3 animate-appear bg-primary-dark flex flex-col gap-2 items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-[26px] text-white
+  }
+
+  .normal-nav {
+    @apply md:flex grow hidden gap-2 justify-between
   }
 
 }
 
 @theme {
+  --font-sans: var(--font-inter);
+  --font-kufi: var(--font-kufi);
   --color-primary: hsl(217 100% 50%);
   --color-primary-light: hsl(from var(--color-primary) h s calc(l + 20));
   --color-primary-lighter: hsl(from var(--color-primary) h s calc(l + 40)); 
@@ -72,5 +118,43 @@
   --color-alert-dark: hsl(from var(--color-alert) h s calc(l - 20));
   --color-alert-darker: hsl(from var(--color-alert) h s calc(l - 40));
   --color-modal-background: rgba(0,0,0,0.5);
-  --shadow-custom: 0px 2px 2px hsla(0, 0%, 0%, 0.07), 0px 4px 4px hsla(0, 0%, 0%, 0.15)
+  --shadow-custom: 0px 2px 2px hsla(0, 0%, 0%, 0.07), 0px 4px 4px hsla(0, 0%, 0%, 0.15);
+
+  --animate-slide-up: slide-up 0.3s ease;
+  @keyframes slide-up {
+    0% {
+      opacity: 0;
+      transform: translatey(100%)
+    } 
+    100% {
+      opacity: 1;
+      transform: translatey(0)
+    }
+  }
+  --animate-appear: appear 0.3s ease;
+
+  @keyframes appear {
+    0% {
+      opacity: 0;
+      transform: scale(0.4);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-lighter);
+  border-radius: 1rem;
+  transition: .3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-light);
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
 }
