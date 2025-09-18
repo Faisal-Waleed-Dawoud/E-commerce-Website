@@ -1,17 +1,15 @@
-import { capitlizeFirstLetter } from "@/lib/utils";
+import { getUser } from "@/lib/actions/users";
+import { authUserId, capitlizeFirstLetter } from "@/lib/utils";
 import { UserButton } from "@clerk/nextjs";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { User } from "@clerk/nextjs/server";
 import React from "react";
 
 async function Header() {
-    const { userId } = await auth();
-    const { users } = await clerkClient();
-    let userName = (await users.getUser(userId)).username;
-    let firstName = (await users.getUser(userId)).firstName;
-    let lastName = (await users.getUser(userId)).lastName;
-    let role = (await users.getUser(userId)).publicMetadata.role;
+    const userId = await authUserId();
+    
+    let {username, firstName, lastName, publicMetadata: {role}} = await getUser(userId) as User
 
-    userName = capitlizeFirstLetter(userName);
+    username = capitlizeFirstLetter(username);
     firstName = capitlizeFirstLetter(firstName);
     lastName = capitlizeFirstLetter(lastName);
     let fullName = firstName + " " + lastName;
@@ -19,7 +17,7 @@ async function Header() {
     return (
         <>
             <header className="flex justify-between items-center mb-6">
-                <h2>Welcome {userName ? userName : fullName}</h2>
+                <h2>Welcome {username ? username : fullName}</h2>
                 <div>
                     <div className="flex gap-2">
                         <div className="text-center">

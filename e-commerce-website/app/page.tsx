@@ -1,9 +1,9 @@
-import NavLinks from "@/components/navLinks";
+import Header from "@/components/header";
 
 export default function Home() {
   return (
     <>
-      <NavLinks />
+      <Header />
     </>
   );
 }
