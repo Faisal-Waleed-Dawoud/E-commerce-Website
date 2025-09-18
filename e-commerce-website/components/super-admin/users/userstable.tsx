@@ -1,16 +1,13 @@
 import Createuser from "@/components/super-admin/users/createuser";
-import { formatDate } from "@/lib/utils";
 import { currentUser, User } from "@clerk/nextjs/server";
-import Image from "next/image";
 import React from "react";
-import Deleteuser from "./deleteuser";
-import UpdateUserForm from "./updateUserForm";
 import Search from "@/components/dasboard/search";
 import Pagination from "@/components/dasboard/pagination";
+import UserInfo from "@/components/dasboard/userInfo";
 
 async function Userstable({page, pageLimit, userList} : {page:number, pageLimit:number, userList: User[]}) {
     const user = await currentUser()
-    const {id: userId, publicMetadata:{role}} = user
+    const {id: userId, publicMetadata:{role}} = user as User
 
     if ((+page > pageLimit) || (+page < 1)) {
         return (
@@ -39,66 +36,9 @@ async function Userstable({page, pageLimit, userList} : {page:number, pageLimit:
                         </tr>
                     </thead>
                     <tbody>
-                        {userList.map((user) => {
-                            const {
-                                id,
-                                firstName,
-                                lastName,
-                                imageUrl,
-                                username,
-                                primaryEmailAddressId,
-                                emailAddresses,
-                                createdAt,
-                                publicMetadata,
-                            } = user;
-                            const { emailAddress } = emailAddresses.find(
-                                (email) => email.id === primaryEmailAddressId
-                            );
-                            const formattedCreatedAt = formatDate(createdAt);
-                            return (
-                                <tr
-                                    key={id}
-                                    className="nth-last-[n]:border-b border-b-secondary-lighter nth-[even]:bg-[#f9f9f9]"
-                                >
-                                    <td className="table-custom-cell">
-                                        <Image
-                                            alt="user-profile"
-                                            className="rounded-full mx-auto"
-                                            width={40}
-                                            height={40}
-                                            src={imageUrl ? imageUrl : "/user-image.webp"}
-                                        />
-                                    </td>
-                                    <td className="table-custom-cell">{username}</td>
-                                    <td className="table-custom-cell">{emailAddress}</td>
-                                    <td className="table-custom-cell">{publicMetadata.role}</td>
-                                    <td className="table-custom-cell border-r border-r-secondary-lighter">
-                                        {formattedCreatedAt}
-                                    </td>
-                                    <td className="flex gap-2 items-center p-2">
-                                    {role === publicMetadata.role && userId !== id ? null : (
-                                        <td>
-                                            <UpdateUserForm
-                                                userData={{
-                                                    id,
-                                                    firstName,
-                                                    lastName,
-                                                    username,
-                                                    emailAddress,
-                                                    publicMetadata,
-                                                }}
-                                            />
-                                        </td>
-                                    )}
-                                    {publicMetadata.role !== role && (
-                                        <td>
-                                            <Deleteuser userData={{ id, username, publicMetadata }} />
-                                        </td>
-                                    )}
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                        {userList.map(user => (
+                            <UserInfo key={user.id} currentUserId={userId} currentUserRole={role} user={user}/>
+                        ))}
                     </tbody>
                 </table>
                 <Pagination pageNumber={page} pageLimit={pageLimit}/>

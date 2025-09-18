@@ -3,9 +3,10 @@ import Modal from '@/components/modal'
 import React, { useState } from 'react'
 import DeleteUserContent from './deleteUserContent'
 import Button from '@/components/button'
+import { User } from '@clerk/nextjs/server'
 
 
-function Deleteuser({userData} : {userData: any}) {
+function Deleteuser({userData} : {userData: User}) {
     
 
     const [open, setIsOpen] = useState(false)
