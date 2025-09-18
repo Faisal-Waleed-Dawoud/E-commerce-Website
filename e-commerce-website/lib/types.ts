@@ -4,13 +4,23 @@ export type Product = {
     name: string,
     description: string,
     price: number,
-    countitiy: number,
+    stock: number,
+    rating: number,
+    images: string[],
+    category: string[],
+    store: Store,
+    status: Status,
+    createdAt: number,
+    updatedAt: number
 }
 
 export type Store = {
+    id: string,
     name: string,
-    owner: string,
-    createdDate: Date,
+    logo: string,
+    banner: string,
+    createdAt: number,
+    products?: Product[]
 }
 
 export type User = {
@@ -33,6 +43,12 @@ export enum Roles {
     admin = "admin",
     seller = "seller", 
     buyer = "buyer",
+}
+
+export enum Status {
+    pending = "pending",
+    approved = "approved",
+    rejected = "rejected"
 }
 
 export const MAX_NUMBERS_PER_PAGE = 5
