@@ -1,8 +1,9 @@
 'use server'
 import { revalidatePath } from "next/cache"
 import { clerkClient } from "@clerk/nextjs/server"
-
-import { MAX_NUMBERS_PER_PAGE } from "./types"
+import { MAX_NUMBERS_PER_PAGE, Roles } from "../types"
+import { cache } from "react"
+import { createUserDB, deleteUserDB, updateUserDB } from "../db/database"
 
 // This type is for errprs that might happen to the user form fields
 // The unhandled error is for connection or clerk unhandeld errors
@@ -77,6 +78,8 @@ export async function createUserFunction(prevState: formState, formData: FormDat
             password: password,
             publicMetadata: { role: role },
         })
+        // This function is only for testing whenever the webhook is not activiated
+        createUserDB(user.id, firstName, lastName, userName, email, Roles[role])
         revalidatePath("/super-admin/users")
         return { status: 200 }
     } catch (error: any) {
@@ -87,33 +90,32 @@ export async function createUserFunction(prevState: formState, formData: FormDat
 
 // Read 
 // Many Users
-export async function getUsers(query?: string, page?: number) {
+export const getUsers = cache(async(query?: string, page?: number) => {
     const { users } = await clerkClient();
     if (query || page) {
-        return (await users.getUserList({ 
-            query: query, 
+        return (await users.getUserList({
+            query: query,
             limit: MAX_NUMBERS_PER_PAGE,
-            offset: (--page * MAX_NUMBERS_PER_PAGE) 
+            offset: (--page * MAX_NUMBERS_PER_PAGE)
         })).data;
     } else {
-        return (await users.getUserList({ 
-            limit: MAX_NUMBERS_PER_PAGE, 
-            offset: (--page * MAX_NUMBERS_PER_PAGE) 
+        return (await users.getUserList({
+            limit: MAX_NUMBERS_PER_PAGE,
+            offset: (--page * MAX_NUMBERS_PER_PAGE)
         })).data;
     }
-}
+})
+
 
 // Single User
-export async function getUser(userId: string) {
-    const { users } = await clerkClient();
-    return (await users.getUser(userId))
-}
-
-// Users Count
-export async function getUsersCount() {
-    const { users } = await clerkClient();
-    return (await users.getCount())
-}
+export const getUser = cache(async(userId: string) => {
+    try {
+        const { users } = await clerkClient();
+        return (await users.getUser(userId))
+    } catch(error) {
+        return error
+    }
+})
 
 // Update
 // Takes the userId which will be used in updating
@@ -149,12 +151,13 @@ export async function updateUserData(userId: string, prevState: formState, formD
     }
 
     try {
-        const user = await (await clerkClient()).users.updateUser(userId, {
+        await (await clerkClient()).users.updateUser(userId, {
             firstName: firstName,
             lastName: lastName,
             username: userName,
             publicMetadata: { role: role },
         })
+        updateUserDB(userId, firstName, lastName, userName, undefined, role)
         revalidatePath(`/super-admin/users`)
         return { status: 200, payload: formData, errors }
     } catch (error: any) {
@@ -168,6 +171,7 @@ export async function deleteUserClerk(userId: string) {
     const errors: Errors = {}
     try {
         (await clerkClient()).users.deleteUser(userId)
+        deleteUserDB(userId)
         revalidatePath("/super-admin/users")
         return { status: 200 }
     } catch (error: any) {
